@@ -19,6 +19,6 @@ return [
 		'password' => '',
 		'hostname' => 'localhost',
 		'port' => '3306',
-		'charset' => 'utf-8',
+		'charset' => 'utf8',
 	],
 ];

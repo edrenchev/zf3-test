@@ -9,24 +9,61 @@
 namespace Application\Controller;
 
 
-use Application\Model\AlbumTable;
+use Application\Model\Album;
+use Zend\Db\Adapter\AdapterInterface;
+use Zend\Hydrator\Reflection as ReflectionHydrator;
+use Zend\Db\ResultSet\HydratingResultSet;
+use Zend\Db\Sql\Sql;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use Zend\Db\Adapter\Driver\ResultInterface;
+
 
 class AlbumController extends AbstractActionController {
 	// Add this property:
-	private $table;
+	private $db;
 
 	// Add this constructor:
-	public function __construct(AlbumTable $table) {
-		$this->table = $table;
+	public function __construct(AdapterInterface $db) {
+		$this->db = $db;
 	}
 
 	public function indexAction() {
+
+
+		$result = $this->db->getDriver()->getConnection()->execute('SELECT * FROM albums');
+		echo '<pre>' . print_r($result, true) . '</pre>';
+		die();
+		if (!$result instanceof ResultInterface || !$result->isQueryResult()) {
+			return [];
+		}
+
+		$resultSet = new HydratingResultSet(
+			new ReflectionHydrator(),
+			new Album('', '')
+		);
+		$resultSet->initialize($result);
+
+		foreach ($resultSet as $item) {
+			echo '<pre>' . print_r($item, true) . '</pre>';
+
+		}
+		die();
+
 //		echo '<pre>' . print_r($this->table->fetchAll(), true) . '</pre>';
 //		die();
+
+		$sql = new Sql($this->db);
+		$select = $sql->select('albums')->where(['id'=>1]);
+		$stmt = $sql->prepareStatementForSqlObject($select);
+		$result = $stmt->execute();
+
+
+//		echo '<pre>' . print_r($resultSet, true) . '</pre>';
+//		die();
+
 		return new ViewModel([
-			'albums' => $this->table->fetchAll(),
+			'albums' => $resultSet,
 		]);
 	}
 
