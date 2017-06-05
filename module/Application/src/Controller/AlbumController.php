@@ -24,12 +24,18 @@ class AlbumController extends AbstractActionController {
 	private $db;
 
 	// Add this constructor:
-	public function __construct(AdapterInterface $db) {
+	public function __construct(\Zend\Db\Adapter\Adapter $db) {
 		$this->db = $db;
 	}
 
 	public function indexAction() {
 
+		$r = $this->db->query('SELECT * FROM albums');
+		$r = $r->execute();
+		foreach ($r as $item) {
+			echo '<pre>' . print_r($item, true) . '</pre>';
+		}
+		die();
 
 		$result = $this->db->getDriver()->getConnection()->execute('SELECT * FROM albums');
 		echo '<pre>' . print_r($result, true) . '</pre>';

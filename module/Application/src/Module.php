@@ -7,6 +7,7 @@
 
 namespace Application;
 
+use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\AdapterInterface;
 
 class Module {
@@ -21,7 +22,8 @@ class Module {
 			'factories' => [
 				Controller\AlbumController::class => function ($container) {
 					return new Controller\AlbumController(
-						$container->get(AdapterInterface::class)
+//						$container->get(AdapterInterface::class)
+						$container->get(Adapter::class)
 					);
 				},
 			],
