@@ -96,17 +96,18 @@ class AlbumController extends AbstractActionController {
 
 
 
-
 	public function indexAction() {
 
 //		$res = $this->getAll('SELECT * FROM albums');
 //		$res = $this->getOne('SELECT title FROM albums');
 //		$res = $this->getCol('SELECT title FROM albums');
 //		$res = $this->getAssoc('SELECT artist, albums.* FROM albums');
-		$res = $this->getAssoc('SELECT artist, title FROM albums');
+//		$res = $this->getAssoc('SELECT artist, title FROM albums');
 
 
-		echo '<pre>' . print_r($res, true) . '</pre>';
+		$r = $this->db->query('INSERT INTO albums (artist, title) VALUE(?)', ['artis"t1','ti<--tle1']);
+
+		echo '<pre>' . print_r($r, true) . '</pre>';
 		die();
 
 		$result = $this->db->getDriver()->getConnection()->execute('SELECT * FROM albums');
