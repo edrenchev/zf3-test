@@ -11,6 +11,7 @@ namespace Application\Controller;
 
 use Application\Model\Album;
 use Zend\Db\Adapter\AdapterInterface;
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Hydrator\Reflection as ReflectionHydrator;
 use Zend\Db\ResultSet\HydratingResultSet;
 use Zend\Db\Sql\Sql;
@@ -28,13 +29,84 @@ class AlbumController extends AbstractActionController {
 		$this->db = $db;
 	}
 
+	public function getAll($sql) {
+		$r = $this->db->query($sql);
+		$r = $r->execute();
+
+		$res = [];
+		foreach ($r as $item) {
+			$res[] = $item;
+		}
+		return $res;
+	}
+
+	public function getOne($sql) {
+		$r = $this->db->query($sql);
+		$r = $r->execute();
+
+		$res = [];
+		foreach ($r as $item) {
+			$res = reset($item);
+			break;
+		}
+		return $res;
+	}
+
+	public function getCol($sql) {
+		$r = $this->db->query($sql);
+		$r = $r->execute();
+
+		$res = [];
+		foreach ($r as $item) {
+			$res[] = reset($item);
+		}
+		return $res;
+	}
+
+	public function getRow($sql) {
+		$r = $this->db->query($sql);
+		$r = $r->execute();
+
+		$res = [];
+		foreach ($r as $item) {
+			$res = $item;
+			break;
+		}
+		return $res;
+	}
+
+	public function getAssoc($sql) {
+		$r = $this->db->query($sql);
+		$r = $r->execute();
+
+		$res = [];
+
+		if($r->getFieldCount() < 3) {
+			foreach ($r as $item) {
+				$item = array_values($item);
+				$res[$item[0]] = $item[1];
+			}
+		} else {
+			foreach ($r as $item) {
+				$res[reset($item)] = $item;
+			}
+		}
+		return $res;
+	}
+
+
+
+
 	public function indexAction() {
 
-		$r = $this->db->query('SELECT * FROM albums');
-		$r = $r->execute();
-		foreach ($r as $item) {
-			echo '<pre>' . print_r($item, true) . '</pre>';
-		}
+//		$res = $this->getAll('SELECT * FROM albums');
+//		$res = $this->getOne('SELECT title FROM albums');
+//		$res = $this->getCol('SELECT title FROM albums');
+//		$res = $this->getAssoc('SELECT artist, albums.* FROM albums');
+		$res = $this->getAssoc('SELECT artist, title FROM albums');
+
+
+		echo '<pre>' . print_r($res, true) . '</pre>';
 		die();
 
 		$result = $this->db->getDriver()->getConnection()->execute('SELECT * FROM albums');
